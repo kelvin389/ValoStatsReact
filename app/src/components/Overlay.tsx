@@ -1,7 +1,11 @@
+import * as MatchTypes from "../types/MatchTypes";
+import OverlayMatch from "./OverlayContainer";
 import "../styles/Overlay.css";
 
 interface OverlayProps {
   showOverlay: boolean;
+  overlayMatchData: MatchTypes.Match | null;
+  puuid: string;
   hideOverlayCallback: () => void;
 }
 
@@ -15,10 +19,7 @@ function Overlay(props: OverlayProps) {
           if (event.target == event.currentTarget) props.hideOverlayCallback();
         }}
       >
-        <div className="bg-black">
-          asdfasdfaweifjaweicj
-          <div className="bg-red-50">asdfasdfsadf</div>
-        </div>
+        <OverlayMatch matchData={props.overlayMatchData} puuid={props.puuid} />
       </div>
     );
   }

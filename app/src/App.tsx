@@ -16,6 +16,8 @@ function App() {
 
   const [loadingMatches, setLoadingMatches] = useState<boolean>(false);
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
+  const [overlayMatchData, setOverlayMatchData] =
+    useState<MatchTypes.Match | null>(null);
 
   const usernameInputRef = useRef<HTMLInputElement | null>(null);
   const serverInputRef = useRef<HTMLSelectElement | null>(null);
@@ -105,10 +107,17 @@ function App() {
       });
   }
 
+  function displaySpecificMatch(overlayMatchData: MatchTypes.Match) {
+    setOverlayMatchData(overlayMatchData);
+    setShowOverlay(true);
+  }
+
   return (
     <>
       <Overlay
         showOverlay={showOverlay}
+        overlayMatchData={overlayMatchData}
+        puuid={puuid}
         hideOverlayCallback={() => setShowOverlay(false)}
       />
       <div>
@@ -131,9 +140,14 @@ function App() {
       <h1>loading: {loadingMatches.toString()}</h1>
       <h1>stopautoload: {debugStopAutoLoad.toString()}</h1>
 
-      <div className="w-5/6 m-auto">
+      <div className="w-full md:w-5/6 lg:w-4/6 xl:w-3/6  m-auto">
         {matches.map((match: MatchTypes.Match) => (
-          <Match key={match.metadata.matchid} data={match} puuid={puuid} />
+          <Match
+            key={match.metadata.matchid}
+            data={match}
+            puuid={puuid}
+            showOverlayCallback={displaySpecificMatch}
+          />
         ))}
       </div>
       <LoadMoreButton loading={loadingMatches} onClick={getMatchHistory} />

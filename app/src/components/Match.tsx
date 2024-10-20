@@ -1,11 +1,11 @@
 import * as MatchTypes from "../types/MatchTypes";
-import * as AgentIcons from "../assets/images/agent-icons";
-import * as RankIcons from "../assets/images/rank-icons";
 import "../styles/Match.css";
+import { getAgentIconSrc, getRankIconSrc } from "../utils/StringToImage";
 
 interface MatchProps {
   data: MatchTypes.Match;
   puuid: string;
+  showOverlayCallback: (overlayMatchData: MatchTypes.Match) => void;
 }
 
 function Match(props: MatchProps) {
@@ -65,14 +65,15 @@ function Match(props: MatchProps) {
         "grid grid-cols-12 py-3 px-5 my-1 border border-white " +
         (myTeamData.has_won ? "bg-green-400" : "bg-red-500")
       }
+      onClick={() => props.showOverlayCallback(match)}
     >
       <div className="col-span-3">
         <img
-          src={AgentIcons.Omen}
+          src={getAgentIconSrc(myPlayer.character)}
           className="aspect-square w-16 inline-block"
         />
         <img
-          src={RankIcons.Bronze}
+          src={getRankIconSrc(myPlayer.currenttier)}
           className="aspect-square w-16 inline-block"
         />
       </div>
