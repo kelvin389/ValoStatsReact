@@ -6,6 +6,9 @@ export default {
       fontFamily: {
         sans: ["Roboto", "sans-serif"],
       },
+      fontSize: {
+        "2.5xl": "1.625rem",
+      },
     },
   },
   plugins: [],

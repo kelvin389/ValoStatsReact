@@ -63,7 +63,7 @@ function Match(props: MatchProps) {
     <div
       className={
         "grid grid-cols-12 py-3 px-5 my-1 border border-white " +
-        (myTeamData.has_won ? "bg-green-400" : "bg-red-500")
+        (myTeamData.has_won ? "bg-emerald-500" : "bg-rose-700")
       }
       onClick={() => props.showOverlayCallback(match)}
     >
@@ -77,22 +77,18 @@ function Match(props: MatchProps) {
           className="aspect-square w-16 inline-block"
         />
       </div>
-      <div className="col-span-4">
-        <div className="inline-block mr-4">
+      <div className="col-span-4 flex items-center">
+        <div className="inline-block mr-4 text-2.5xl">
           {myTeamData.rounds_won + ":" + myTeamData.rounds_lost}
         </div>
-        <div className="inline-block">
-          {myPlayer.stats.kills +
-            "/" +
-            myPlayer.stats.deaths +
-            "/" +
-            myPlayer.stats.assists}
+        <div className="inline-block text-2xl">
+          {myPlayer.stats.kills + "/" + myPlayer.stats.deaths + "/" + myPlayer.stats.assists}
         </div>
       </div>
       <div className="col-span-5 flex items-center justify-end">
-        <div className="match-right inline-block">{timeAgoStr}</div>
-        <div className="match-right inline-block">{match.metadata.map}</div>
-        <div className="match-right inline-block">{match.metadata.mode}</div>
+        <div className="match-right inline-block w-28 text-center">{timeAgoStr}</div>
+        <div className="match-right inline-block w-28 text-center">{match.metadata.map}</div>
+        <div className="match-right inline-block w-28 text-center">{match.metadata.mode}</div>
       </div>
     </div>
   );

@@ -1,0 +1,2 @@
+export const ECO_MY_MIN_LOADOUT_VAL = 15000;
+export const ECO_OP_MAX_LOADOUT_VAL = 15000;

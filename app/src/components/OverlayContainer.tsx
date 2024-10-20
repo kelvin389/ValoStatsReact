@@ -13,17 +13,9 @@ function OverlayMatch(props: OverlayMatchProps) {
 
   return (
     <div className="container max-w-6xl">
-      <OverlayTable
-        matchData={data}
-        puuid={props.puuid}
-        teamPlayers={data.players.red}
-      />
+      <OverlayTable matchData={data} puuid={props.puuid} teamPlayers={data.players.red} />
       <hr />
-      <OverlayTable
-        matchData={data}
-        puuid={props.puuid}
-        teamPlayers={data.players.blue}
-      />
+      <OverlayTable matchData={data} puuid={props.puuid} teamPlayers={data.players.blue} />
     </div>
   );
 }
