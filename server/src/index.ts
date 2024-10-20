@@ -2,9 +2,6 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
-import { exit } from "process";
-import { error } from "console";
-import { stringify } from "querystring";
 
 // load variables from .env in root directory
 // up once to exit /src, then up once more to root
@@ -26,12 +23,15 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // api routes
-app.get("/api/account_info/:username/:tag", async (req: Request, res: Response) => {
-  const { username, tag } = req.params;
-  const apiData = await queryAccountInfo(username, tag);
+app.get(
+  "/api/account_info/:username/:tag",
+  async (req: Request, res: Response) => {
+    const { username, tag } = req.params;
+    const apiData = await queryAccountInfo(username, tag);
 
-  res.json(apiData);
-});
+    res.json(apiData);
+  }
+);
 app.get(
   "/api/match_history/:puuid/:region/:startIndex/:endIndex",
   async (req: Request, res: Response) => {
@@ -40,7 +40,12 @@ app.get(
     res.setHeader("Connection", "keep-alive");
 
     const { puuid, region, startIndex, endIndex } = req.params;
-    const matchHistoryData = await queryMatchHistory(puuid, region, startIndex, endIndex);
+    const matchHistoryData = await queryMatchHistory(
+      puuid,
+      region,
+      startIndex,
+      endIndex
+    );
 
     const matches = matchHistoryData.History;
     for (let i = 0; i < matches.length; i++) {

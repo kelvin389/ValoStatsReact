@@ -1,4 +1,8 @@
 import { useState, useEffect, useRef } from "react";
+import LoadMoreButton from "./components/LoadMoreButton";
+import Match from "./components/Match";
+import * as MatchTypes from "./types/MatchTypes";
+import Overlay from "./components/Overlay";
 
 function App() {
   // gets matches from index 0->BATCH_SIZE, then BATCH_SIZE->BATCH_SIZE*2, ...
@@ -7,27 +11,21 @@ function App() {
   const [endIndex, setEndIndex] = useState<number>(BATCH_SIZE);
   const [startIndex, setStartIndex] = useState<number>(0);
   const [puuid, setPuuid] = useState<string>("");
-  const [matches, setMatches] = useState<object[]>([]);
+  const [matches, setMatches] = useState<MatchTypes.Match[]>([]);
+  const [debugStopAutoLoad, setDebugStopAutoLoad] = useState<boolean>(false);
+
+  const [loadingMatches, setLoadingMatches] = useState<boolean>(false);
+  const [showOverlay, setShowOverlay] = useState<boolean>(false);
 
   const usernameInputRef = useRef<HTMLInputElement | null>(null);
   const serverInputRef = useRef<HTMLSelectElement | null>(null);
-
-  /*
-    useEffect(() => {
-        fetch("/api/helloworld")
-            .then((res) => res.json())
-            .then((data) => {
-                setData(data.message);
-            });
-    }, []);
-    */
 
   // trigger getMatchHistory when puuid changes.
   // puuid should only change when we are searching
   // for a new user and in this case we want to
   // immediately get initial match history
   useEffect(() => {
-    if (puuid != "") {
+    if (puuid != "" && !debugStopAutoLoad) {
       getMatchHistory();
     }
   }, [puuid]);
@@ -44,6 +42,11 @@ function App() {
       console.log("tried to get server before ref was mounted");
       throw new Error();
     }
+    if (loadingMatches) {
+      console.log("tried to load matches while matches are already loading");
+      throw new Error();
+    }
+    setLoadingMatches(true);
 
     // get match history and receive response as a stream of data.
     // this lets us display matches as they come in from the server instead
@@ -58,7 +61,7 @@ function App() {
     };
     eventSource.onmessage = (event) => {
       console.log("received data from es");
-      const dataJson = JSON.parse(event.data);
+      const dataJson = JSON.parse(event.data) as MatchTypes.Match;
       console.log(dataJson);
       setMatches((prevMatches) => {
         return prevMatches.concat(dataJson);
@@ -69,6 +72,7 @@ function App() {
       // and the phase indicates that the source has been closed by the server
       if (error.eventPhase == EventSource.CLOSED) {
         eventSource.close();
+        setLoadingMatches(false);
         console.log("closed es");
       } else {
         console.error("es error", error);
@@ -103,6 +107,10 @@ function App() {
 
   return (
     <>
+      <Overlay
+        showOverlay={showOverlay}
+        hideOverlayCallback={() => setShowOverlay(false)}
+      />
       <div>
         Search for user:
         <input type="text" ref={usernameInputRef} placeholder="username#tag" />
@@ -113,22 +121,39 @@ function App() {
           <option value="na">kr</option>
           <option value="na">na</option>
         </select>
-        <button type="submit" onClick={getPuuid}>
-          Search
-        </button>
+        <button onClick={getPuuid}>Search</button>
         <br />
       </div>
 
       <button onClick={debug}>debug</button>
 
       <h1>puuid: {puuid}</h1>
+      <h1>loading: {loadingMatches.toString()}</h1>
+      <h1>stopautoload: {debugStopAutoLoad.toString()}</h1>
 
-      <ul>
-        {matches.map((match: any) => (
-          <li key={match.metadata.matchid}>{match.metadata.matchid}</li>
+      <div className="w-5/6 m-auto">
+        {matches.map((match: MatchTypes.Match) => (
+          <Match key={match.metadata.matchid} data={match} puuid={puuid} />
         ))}
-      </ul>
-      <button onClick={getMatchHistory}>load more</button>
+      </div>
+      <LoadMoreButton loading={loadingMatches} onClick={getMatchHistory} />
+
+      <br />
+      <br />
+      <button onClick={() => setDebugStopAutoLoad(true)}>
+        DEBUG STOP AUTO LOAD
+      </button>
+      <button
+        onClick={() => {
+          if (showOverlay) {
+            setShowOverlay(false);
+          } else {
+            setShowOverlay(true);
+          }
+        }}
+      >
+        toggle overlay
+      </button>
     </>
   );
 }

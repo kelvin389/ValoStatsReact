@@ -1,0 +1,7 @@
+.match-right {
+  border: 1px solid black;
+  background-color: grey;
+  border-radius: 1000px;
+  padding: 5px 10px;
+  margin-left: 10px;
+}
