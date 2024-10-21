@@ -152,7 +152,7 @@ function App() {
       <h1>loading: {loadingMatches.toString()}</h1>
       <h1>stopautoload: {debugStopAutoLoad.toString()}</h1>
 
-      <div className="w-full md:w-5/6 lg:w-4/6 xl:w-3/6 m-auto">
+      <div className="w-full xs:w-4/5 md:w-[91%] lg:w-[70%] xl:w-3/5 2xl:w-2/5 m-auto">
         {matches.map((match: MatchTypes.Match) => (
           <Match
             key={match.metadata.matchid}

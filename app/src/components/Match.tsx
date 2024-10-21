@@ -62,33 +62,41 @@ function Match(props: MatchProps) {
   return (
     <div
       className={
-        "grid grid-cols-12 py-3 px-5 my-1 border border-white " +
+        "md:flex py-3 px-5 my-1 border border-white h-36 md:h-24 " +
         (myTeamData.has_won ? "bg-emerald-500" : "bg-rose-700")
       }
       onClick={() => props.showOverlayCallback(match)}
     >
-      <div className="col-span-3">
-        <img
-          src={getAgentIconSrc(myPlayer.character)}
-          className="aspect-square w-16 inline-block"
-        />
-        <img
-          src={getRankIconSrc(myPlayer.currenttier)}
-          className="aspect-square w-16 inline-block"
-        />
-      </div>
-      <div className="col-span-4 flex items-center">
-        <div className="inline-block mr-4 text-2.5xl">
-          {myTeamData.rounds_won + ":" + myTeamData.rounds_lost}
+      <div className="flex mb-4 md:mb-0 md:w-[45%] justify-between">
+        <div className="inline-block mx-auto md:mx-0 md:mr-4">
+          <img
+            src={getAgentIconSrc(myPlayer.character)}
+            className="aspect-square min-w-16 max-w-16 inline-block"
+          />
+          <img
+            src={getRankIconSrc(myPlayer.currenttier)}
+            className="aspect-square w-12 inline-block"
+          />
         </div>
-        <div className="inline-block text-2xl">
-          {myPlayer.stats.kills + "/" + myPlayer.stats.deaths + "/" + myPlayer.stats.assists}
+        <div className="inline-flex items-center mx-auto md:mx-0 flex-grow text-center">
+          <div className="text-xl xs:text-2xl w-1/2">
+            {myTeamData.rounds_won + ":" + myTeamData.rounds_lost}
+          </div>
+          <div className="text-xl xs:text-2xl w-1/2">
+            {myPlayer.stats.kills + "/" + myPlayer.stats.deaths + "/" + myPlayer.stats.assists}
+          </div>
         </div>
       </div>
-      <div className="col-span-5 flex items-center justify-end">
-        <div className="match-right inline-block w-28 text-center">{timeAgoStr}</div>
-        <div className="match-right inline-block w-28 text-center">{match.metadata.map}</div>
-        <div className="match-right inline-block w-28 text-center">{match.metadata.mode}</div>
+      <div className="flex justify-around md:ml-auto md:items-center">
+        <div className="match-right inline-block w-28 text-center text-xs md:text-base">
+          {timeAgoStr}
+        </div>
+        <div className="match-right inline-block w-28 text-center text-xs md:text-base">
+          {match.metadata.map}
+        </div>
+        <div className="match-right inline-block w-28 text-center text-xs md:text-base">
+          {match.metadata.mode}
+        </div>
       </div>
     </div>
   );
