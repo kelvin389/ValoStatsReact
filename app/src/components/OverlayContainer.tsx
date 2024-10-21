@@ -13,9 +13,9 @@ function OverlayContainer(props: OverlayContainerProps) {
   if (!data) return;
 
   return (
-    <div className="container max-w-6xl min-w-max bg-slate-600 px-4 py-2 m-auto">
+    <div className="container max-w-6xl min-w-max bg-neutral-800 px-4 py-2 m-auto">
       <button className="sticky top-3 left-4" onClick={props.hideOverlayCallback}>
-        X
+        ✖
       </button>
       <OverlayTable matchData={data} puuid={props.puuid} teamPlayers={data.players.red} />
       <hr className="my-4" />

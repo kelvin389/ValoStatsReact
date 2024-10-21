@@ -14,3 +14,7 @@ button {
     border: 1px solid white;
     padding: 1px 4px;
 }
+
+.dark-text {
+color:#5a5e64;
+}

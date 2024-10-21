@@ -8,6 +8,8 @@ function App() {
   // gets matches from index 0->BATCH_SIZE, then BATCH_SIZE->BATCH_SIZE*2, ...
   const BATCH_SIZE = 3;
 
+  const [usernameText, setUsernameText] = useState<string>("valo stats");
+
   const [endIndex, setEndIndex] = useState<number>(BATCH_SIZE);
   const [startIndex, setStartIndex] = useState<number>(0);
   const [puuid, setPuuid] = useState<string>("");
@@ -47,6 +49,11 @@ function App() {
     setEndIndex((prevEndIndex) => {
       return prevEndIndex + BATCH_SIZE;
     });
+  }
+
+  function resetIndices() {
+    setStartIndex(0);
+    setEndIndex(BATCH_SIZE);
   }
 
   // request api for next set of matches
@@ -94,20 +101,38 @@ function App() {
   }
 
   // request api with username#tag input and get puuid in return
-  async function getPuuid() {
-    if (!usernameInputRef.current) {
-      console.log("tried to search player before ref was mounted");
-      throw new Error();
-    }
-
-    const pieces = usernameInputRef.current.value.split("#");
-
+  async function getPuuid(pieces: string[]) {
     await fetch(`/api/account_info/${pieces[0]}/${pieces[1]}`)
       .then((res) => res.json())
       .then((data) => {
         //console.log(data);
         setPuuid(data.data.puuid);
       });
+  }
+
+  async function searchHandler() {
+    if (!usernameInputRef.current) {
+      console.log("tried to search player before ref was mounted");
+      throw new Error();
+    }
+    if (loadingMatches) {
+      console.log("tried to search while matches are still");
+      throw new Error();
+    }
+
+    // display search term at top of page
+    setUsernameText(usernameInputRef.current.value);
+    // pull username and split into pieces
+    const pieces = usernameInputRef.current.value.split("#");
+    // clear textbox
+    usernameInputRef.current.value = "";
+
+    // clear variables for new player
+    setMatches([]);
+    resetIndices();
+
+    // TODO: make sure input is valid
+    await getPuuid(pieces);
   }
 
   async function debug() {
@@ -132,25 +157,26 @@ function App() {
         puuid={puuid}
         hideOverlayCallback={() => setShowOverlay(false)}
       />
-      <div>
-        Search for user:
-        <input type="text" ref={usernameInputRef} placeholder="username#tag" />
-        <select ref={serverInputRef}>
-          <option value="na">na</option>
-          <option value="na">na</option>
-          <option value="na">na</option>
-          <option value="na">kr</option>
-          <option value="na">na</option>
-        </select>
-        <button onClick={getPuuid}>Search</button>
-        <br />
+      <div className="text-center mb-7">
+        {/* <h1 className="text-5xl mb-4 mt-20">{username}</h1> */}
+        <div className="flex justify-center items-end text-5xl mb-4 h-32">{usernameText}</div>
+        <div>
+          <input
+            type="text"
+            ref={usernameInputRef}
+            placeholder="username#tag"
+            className="dark-text mr-1 w-[60%] xs:w-[50%] md:w-96"
+          />
+          <select ref={serverInputRef} className="dark-text mr-1">
+            <option value="na">na</option>
+            <option value="na">na</option>
+            <option value="na">na</option>
+            <option value="na">kr</option>
+            <option value="na">na</option>
+          </select>
+          <button onClick={searchHandler}>Search</button>
+        </div>
       </div>
-
-      <button onClick={debug}>debug</button>
-
-      <h1>puuid: {puuid}</h1>
-      <h1>loading: {loadingMatches.toString()}</h1>
-      <h1>stopautoload: {debugStopAutoLoad.toString()}</h1>
 
       <div className="w-full xs:w-4/5 md:w-[91%] lg:w-[70%] xl:w-3/5 2xl:w-2/5 m-auto">
         {matches.map((match: MatchTypes.Match) => (
@@ -161,11 +187,21 @@ function App() {
             showOverlayCallback={displaySpecificMatch}
           />
         ))}
-        <LoadMoreButton loading={loadingMatches} onClick={getMatchHistory} />
+        <div className="text-center">
+          <LoadMoreButton hide={puuid == ""} loading={loadingMatches} onClick={getMatchHistory} />
+        </div>
       </div>
 
       <br />
       <br />
+
+      <h1 className="text-5xl">debug stuff:</h1>
+      <button onClick={debug}>debug</button>
+
+      <h1>puuid: {puuid}</h1>
+      <h1>loading: {loadingMatches.toString()}</h1>
+      <h1>stopautoload: {debugStopAutoLoad.toString()}</h1>
+
       <button onClick={() => setDebugStopAutoLoad(true)}>DEBUG STOP AUTO LOAD</button>
       <button
         onClick={() => {
