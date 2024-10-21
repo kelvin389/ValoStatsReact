@@ -62,8 +62,9 @@ function Match(props: MatchProps) {
   return (
     <div
       className={
-        "md:flex py-3 px-5 my-1 border border-white h-36 md:h-24 " +
-        (myTeamData.has_won ? "bg-emerald-500" : "bg-rose-700")
+        "md:flex py-3 px-2 xs:px-5 my-1 border-2 md:border border-gray-100/50 rounded-sm h-36 md:h-24 cursor-pointer select-none " +
+        " " +
+        (myTeamData.has_won ? "bg-emerald-600" : "bg-rose-800")
       }
       onClick={() => props.showOverlayCallback(match)}
     >
@@ -71,10 +72,12 @@ function Match(props: MatchProps) {
         <div className="inline-block mx-auto md:mx-0 md:mr-4">
           <img
             src={getAgentIconSrc(myPlayer.character)}
-            className="aspect-square min-w-16 max-w-16 inline-block"
+            alt={myPlayer.character + " agent icon"}
+            className="rounded-full aspect-square min-w-16 max-w-16 inline-block"
           />
           <img
             src={getRankIconSrc(myPlayer.currenttier)}
+            alt={myPlayer.currenttier_patched + " rank icon"}
             className="aspect-square w-12 inline-block"
           />
         </div>

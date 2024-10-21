@@ -12,7 +12,7 @@ function Overlay(props: OverlayProps) {
   if (props.showOverlay) {
     return (
       <div
-        className="bg-overlay fixed flex left-0 top-0 w-full h-full z-50 overflow-auto"
+        className="bg-black/60 fixed flex left-0 top-0 w-full h-full z-50 overflow-auto"
         onClick={(event) => {
           // clicking on the overlay background hides overlay
           // checks target to make sure were not clicking on children

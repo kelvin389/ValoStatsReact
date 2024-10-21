@@ -165,9 +165,9 @@ function App() {
             type="text"
             ref={usernameInputRef}
             placeholder="username#tag"
-            className="dark-text mr-1 w-[60%] xs:w-[50%] md:w-96"
+            className="dark-text mr-1 w-[60%] xs:w-[50%] md:w-96 h-searchbar"
           />
-          <select ref={serverInputRef} className="dark-text mr-1">
+          <select title="region" ref={serverInputRef} className="dark-text mr-1 h-searchbar">
             <option value="na">na</option>
             <option value="na">na</option>
             <option value="na">na</option>
@@ -192,28 +192,33 @@ function App() {
         </div>
       </div>
 
-      <br />
-      <br />
+      <div>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <h1 className="text-5xl">debug stuff:</h1>
+        <button onClick={debug}>debug</button>
 
-      <h1 className="text-5xl">debug stuff:</h1>
-      <button onClick={debug}>debug</button>
+        <h1>puuid: {puuid}</h1>
+        <h1>loading: {loadingMatches.toString()}</h1>
+        <h1>stopautoload: {debugStopAutoLoad.toString()}</h1>
 
-      <h1>puuid: {puuid}</h1>
-      <h1>loading: {loadingMatches.toString()}</h1>
-      <h1>stopautoload: {debugStopAutoLoad.toString()}</h1>
-
-      <button onClick={() => setDebugStopAutoLoad(true)}>DEBUG STOP AUTO LOAD</button>
-      <button
-        onClick={() => {
-          if (showOverlay) {
-            setShowOverlay(false);
-          } else {
-            setShowOverlay(true);
-          }
-        }}
-      >
-        toggle overlay
-      </button>
+        <button onClick={() => setDebugStopAutoLoad(true)}>DEBUG STOP AUTO LOAD</button>
+        <button
+          onClick={() => {
+            if (showOverlay) {
+              setShowOverlay(false);
+            } else {
+              setShowOverlay(true);
+            }
+          }}
+        >
+          toggle overlay
+        </button>
+      </div>
     </>
   );
 }

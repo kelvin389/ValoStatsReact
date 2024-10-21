@@ -10,11 +10,11 @@ export default {
         "1.5xl": "1.375rem",
         "2.5xl": "1.625rem",
       },
-      colors: {
-        overlay: "#00000066;",
-      },
       screens: {
         xs: "500px",
+      },
+      spacing: {
+        searchbar: "24px",
       },
     },
   },

@@ -70,7 +70,7 @@ function OverlayTable(props: OverlayTableProps) {
           <img
             src={getAgentIconSrc(props.row.original.agent)}
             className="aspect-square w-12 rounded-xl"
-            alt="Agent Icon"
+            alt={props.row.original.agent + " agent icon"}
           />
         ),
         enableSorting: false,
@@ -82,7 +82,7 @@ function OverlayTable(props: OverlayTableProps) {
           <img
             src={getRankIconSrc(props.row.original.rank)}
             className="aspect-square w-10"
-            alt="Rank Icon"
+            alt={props.row.original.rank + " rank icon"}
           />
         ),
         enableSorting: false,
