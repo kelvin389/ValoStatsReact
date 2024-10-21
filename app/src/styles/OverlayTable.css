@@ -1,0 +1,23 @@
+.table-row-even {
+  background-color: #3a3a3a;
+}
+
+.table-row-odd {
+  background-color: #2a2a2a;
+}
+
+.table-row-highlight {
+  background-color:#4d4a27;
+}
+
+.std-width {
+  min-width: 30px;
+  max-width: 60px;
+  /* width:60px; */
+}
+
+.name-width {
+  /* min-width: 200px;
+  max-width: 200px; */
+  width:200px
+}

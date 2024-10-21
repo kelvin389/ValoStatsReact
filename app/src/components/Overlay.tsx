@@ -1,6 +1,5 @@
 import * as MatchTypes from "../types/MatchTypes";
-import OverlayMatch from "./OverlayContainer";
-import "../styles/Overlay.css";
+import OverlayContainer from "./OverlayContainer";
 
 interface OverlayProps {
   showOverlay: boolean;
@@ -13,13 +12,18 @@ function Overlay(props: OverlayProps) {
   if (props.showOverlay) {
     return (
       <div
-        className="overlay"
+        className="bg-overlay fixed flex left-0 top-0 w-full h-full z-50 overflow-auto"
         onClick={(event) => {
-          // clicking on children of this element doesnt hide overlay
+          // clicking on the overlay background hides overlay
+          // checks target to make sure were not clicking on children
           if (event.target == event.currentTarget) props.hideOverlayCallback();
         }}
       >
-        <OverlayMatch matchData={props.overlayMatchData} puuid={props.puuid} />
+        <OverlayContainer
+          matchData={props.overlayMatchData}
+          puuid={props.puuid}
+          hideOverlayCallback={props.hideOverlayCallback}
+        />
       </div>
     );
   }

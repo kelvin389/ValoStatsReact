@@ -9,6 +9,9 @@ export default {
       fontSize: {
         "2.5xl": "1.625rem",
       },
+      colors: {
+        overlay: "#00000066;",
+      },
     },
   },
   plugins: [],

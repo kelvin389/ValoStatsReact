@@ -31,6 +31,17 @@ function App() {
     }
   }, [puuid]);
 
+  // set overflow:hidden when overlay is open.
+  // prevents mobile users from scrolling background
+  // while the overlay is still open
+  useEffect(() => {
+    if (showOverlay) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+  }, [showOverlay]);
+
   function incrementIndices() {
     setStartIndex(endIndex);
     setEndIndex((prevEndIndex) => {
@@ -38,6 +49,7 @@ function App() {
     });
   }
 
+  // request api for next set of matches
   async function getMatchHistory() {
     if (!serverInputRef.current) {
       console.log("tried to get server before ref was mounted");
@@ -81,6 +93,7 @@ function App() {
     };
   }
 
+  // request api with username#tag input and get puuid in return
   async function getPuuid() {
     if (!usernameInputRef.current) {
       console.log("tried to search player before ref was mounted");

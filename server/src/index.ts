@@ -23,15 +23,12 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // api routes
-app.get(
-  "/api/account_info/:username/:tag",
-  async (req: Request, res: Response) => {
-    const { username, tag } = req.params;
-    const apiData = await queryAccountInfo(username, tag);
+app.get("/api/account_info/:username/:tag", async (req: Request, res: Response) => {
+  const { username, tag } = req.params;
+  const apiData = await queryAccountInfo(username, tag);
 
-    res.json(apiData);
-  }
-);
+  res.json(apiData);
+});
 app.get(
   "/api/match_history/:puuid/:region/:startIndex/:endIndex",
   async (req: Request, res: Response) => {
@@ -40,12 +37,7 @@ app.get(
     res.setHeader("Connection", "keep-alive");
 
     const { puuid, region, startIndex, endIndex } = req.params;
-    const matchHistoryData = await queryMatchHistory(
-      puuid,
-      region,
-      startIndex,
-      endIndex
-    );
+    const matchHistoryData = await queryMatchHistory(puuid, region, startIndex, endIndex);
 
     const matches = matchHistoryData.History;
     for (let i = 0; i < matches.length; i++) {
@@ -127,5 +119,5 @@ async function queryMatchInfo(matchId: string): Promise<any> {
 
 // start server
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`API is running on http://localhost:${PORT}`);
 });
