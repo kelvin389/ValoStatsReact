@@ -8,7 +8,7 @@ function App() {
   // gets matches from index 0->BATCH_SIZE, then BATCH_SIZE->BATCH_SIZE*2, ...
   const BATCH_SIZE = 3;
 
-  const [usernameText, setUsernameText] = useState<string>("valo stats");
+  const [usernameText, setUsernameText] = useState<string>("Valo Stats");
 
   const [endIndex, setEndIndex] = useState<number>(BATCH_SIZE);
   const [startIndex, setStartIndex] = useState<number>(0);
@@ -135,15 +135,6 @@ function App() {
     await getPuuid(pieces);
   }
 
-  async function debug() {
-    await fetch("/api/account_info/kal/389")
-      .then((res) => res.json())
-      .then((data) => {
-        //console.log(data);
-        setPuuid(data.data.puuid);
-      });
-  }
-
   function displaySpecificMatch(overlayMatchData: MatchTypes.Match) {
     setOverlayMatchData(overlayMatchData);
     setShowOverlay(true);
@@ -168,11 +159,12 @@ function App() {
             className="dark-text mr-1 w-[60%] xs:w-[50%] md:w-96 h-searchbar"
           />
           <select title="region" ref={serverInputRef} className="dark-text mr-1 h-searchbar">
-            <option value="na">na</option>
-            <option value="na">na</option>
-            <option value="na">na</option>
-            <option value="na">kr</option>
-            <option value="na">na</option>
+            <option value="na">NA</option>
+            <option value="latam">LATAM</option>
+            <option value="br">BR</option>
+            <option value="eu">EU</option>
+            <option value="kr">KR</option>
+            <option value="ap">AP</option>
           </select>
           <button onClick={searchHandler}>Search</button>
         </div>
@@ -192,6 +184,7 @@ function App() {
         </div>
       </div>
 
+      {/*
       <div>
         <br />
         <br />
@@ -200,7 +193,6 @@ function App() {
         <br />
         <br />
         <h1 className="text-5xl">debug stuff:</h1>
-        <button onClick={debug}>debug</button>
 
         <h1>puuid: {puuid}</h1>
         <h1>loading: {loadingMatches.toString()}</h1>
@@ -219,6 +211,7 @@ function App() {
           toggle overlay
         </button>
       </div>
+      */}
     </>
   );
 }

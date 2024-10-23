@@ -1,14 +1,14 @@
 {
-  "name": "valostatsreactbundle",
-  "version": "1.0.0",
-  "scripts": {
-    "client": "npm run dev --prefix app",
-    "server": "npm run dev --prefix server",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "install-all": "cd app && npm install && cd ../server && npm install"
-  },
-  "prettier": {
-    "tabWidth": 2,
-    "printWidth": 100
-  }
+    "name": "valostatsreactbundle",
+    "version": "1.0.0",
+    "scripts": {
+        "client": "npm run dev --prefix app",
+        "server": "npm run dev --prefix server",
+        "dev": "concurrently \"npm run server\" \"npm run client\"",
+        "install-all": "cd app && npm install && cd ../server && npm install"
+    },
+    "prettier": {
+        "tabWidth": 2,
+        "printWidth": 100
+    }
 }
