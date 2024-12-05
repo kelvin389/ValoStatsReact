@@ -44,7 +44,7 @@ app.get(
     const matches = matchHistoryData.History;
     for (let i = 0; i < matches.length; i++) {
       const matchId = matches[i].MatchID;
-      const matchData = await queryMatchInfo(API_KEY, matchId);
+      const matchData = await queryMatchInfo(API_KEY, region, matchId);
       res.write(`data: ${JSON.stringify(matchData.data)}\n\n`);
     }
     res.end();

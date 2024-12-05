@@ -52,8 +52,8 @@ async function queryMatchHistory(
   }
 }
 
-async function queryMatchInfo(apiKey: string, matchId: string): Promise<any> {
-  const urlExt = `/v2/match/${matchId}?`;
+async function queryMatchInfo(apiKey: string, region: string, matchId: string): Promise<any> {
+  const urlExt = `/v4/match/${region}/${matchId}?`;
   const params = new URLSearchParams({
     api_key: apiKey,
   });
