@@ -205,6 +205,7 @@ export interface Defuse {
 export enum Site {
   A = "A",
   B = "B",
+  C = "C",
 }
 
 export enum Result {

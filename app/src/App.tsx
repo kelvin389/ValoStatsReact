@@ -173,7 +173,7 @@ function App() {
       <div className="w-full xs:w-4/5 md:w-[91%] lg:w-[70%] xl:w-3/5 2xl:w-2/5 m-auto">
         {matches.map((match: MatchTypes.Match) => (
           <Match
-            key={match.metadata.matchid}
+            key={match.metadata.match_id}
             data={match}
             puuid={puuid}
             showOverlayCallback={displaySpecificMatch}

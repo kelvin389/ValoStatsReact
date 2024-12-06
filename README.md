@@ -9,12 +9,17 @@ Only tested running in dev mode, little to no error handling exists. Deathmatch 
 Client:
 
 - React
+  - [react-tooltip Component](https://www.npmjs.com/package/react-tooltip)
+  - [Tanstack react-table Component](https://www.npmjs.com/package/@tanstack/react-table)
 - Vite
 - Tailwind
+- [heatmap-ts](https://www.npmjs.com/package/heatmap-ts) which is a typescript translation of [heatmapjs](https://www.npmjs.com/package/heatmapjs)
 
 Server:
 
 - Express
+
+Python scripts used for lazy method of updating data from [valorant-api.com](https://valorant-api.com/)
 
 ## Usage
 
@@ -24,7 +29,7 @@ Server:
    API_KEY=your-api-key-here
    PORT=some-port              (optional)
    ```
-1. install dependencies:
+1. install dependencies for client and server:
 
    ```
    npm run install-all
