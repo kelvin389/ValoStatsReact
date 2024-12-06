@@ -14,6 +14,7 @@ interface OverlayHeatmapTabProps {
 interface Filters {
   KillDeath: FilterKillDeath;
   AttackDefend: FilterAttackDefend;
+  PrePostPlant: FilterPrePostPlant;
 }
 
 enum FilterKillDeath {
@@ -25,6 +26,12 @@ enum FilterKillDeath {
 enum FilterAttackDefend {
   Attack = 0,
   Defense = 1,
+  Both = 2,
+}
+
+enum FilterPrePostPlant {
+  Preplant = 0,
+  Postplant = 1,
   Both = 2,
 }
 
@@ -40,8 +47,9 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
 
   // initial filter states
   const [filters, setFilters] = useState<Filters>({
-    KillDeath: FilterKillDeath.Kill,
-    AttackDefend: FilterAttackDefend.Attack,
+    KillDeath: FilterKillDeath.Both,
+    AttackDefend: FilterAttackDefend.Both,
+    PrePostPlant: FilterPrePostPlant.Both,
   });
 
   function updateFilterKillDeath(newVal: FilterKillDeath) {
@@ -50,11 +58,16 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
       KillDeath: newVal,
     }));
   }
-
   function updateFilterAttackDefend(newVal: FilterAttackDefend) {
     setFilters((old) => ({
       ...old,
       AttackDefend: newVal,
+    }));
+  }
+  function updateFilterPrePostPlant(newVal: FilterPrePostPlant) {
+    setFilters((old) => ({
+      ...old,
+      PrePostPlant: newVal,
     }));
   }
 
@@ -73,6 +86,8 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
   useEffect(() => {
     generateAndSetHeatmap(matchData, minimapData, curPuuid, heatmapRef, filters);
   }, [filters, curPuuid]);
+
+  const [redPlayers, bluePlayers] = splitPlayersByTeam(matchData.players);
 
   return (
     <>
@@ -123,53 +138,67 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
               {filters.AttackDefend}
             </div>
             <div className="w-full">
-              <button>preplant</button>
-              <button>postplant</button>
-              <button>both</button>
+              <button
+                className={filters.PrePostPlant == FilterPrePostPlant.Preplant ? "bg-gray-600" : ""}
+                onClick={() => updateFilterPrePostPlant(FilterPrePostPlant.Preplant)}
+              >
+                preplant
+              </button>
+              <button
+                className={
+                  filters.PrePostPlant == FilterPrePostPlant.Postplant ? "bg-gray-600" : ""
+                }
+                onClick={() => updateFilterPrePostPlant(FilterPrePostPlant.Postplant)}
+              >
+                postplant
+              </button>
+              <button
+                className={filters.PrePostPlant == FilterPrePostPlant.Both ? "bg-gray-600" : ""}
+                onClick={() => updateFilterPrePostPlant(FilterPrePostPlant.Both)}
+              >
+                both
+              </button>
+              {filters.PrePostPlant}
             </div>
           </div>
           <div className="w-full grid grid-cols-2 mt-1">
             <div className="mx-auto">
-              {matchData.players
-                .slice(0, Math.floor(matchData.players.length / 2))
-                .map((player) => (
-                  <div
-                    className={
-                      (curPuuid == player.puuid ? "bg-gray-600" : "") +
-                      " w-64 mb-1 border cursor-pointer"
-                    }
-                    onClick={() => {
-                      setCurPuuid(player.puuid);
-                    }}
-                  >
-                    <img
-                      className="w-12 aspect-square inline"
-                      src={getAgentIconSrc(player.agent.name)}
-                    />
-                    <span className="ml-2">{player.name}</span>
-                  </div>
-                ))}
+              {redPlayers.map((player) => (
+                <div
+                  className={
+                    (curPuuid == player.puuid ? "bg-gray-600" : "") +
+                    " w-64 mb-1 border cursor-pointer"
+                  }
+                  onClick={() => {
+                    setCurPuuid(player.puuid);
+                  }}
+                >
+                  <img
+                    className="w-12 aspect-square inline"
+                    src={getAgentIconSrc(player.agent.name)}
+                  />
+                  <span className="ml-2">{player.name}</span>
+                </div>
+              ))}
             </div>
             <div className="mx-auto">
-              {matchData.players
-                .slice(Math.floor(matchData.players.length / 2), matchData.players.length)
-                .map((player) => (
-                  <div
-                    className={
-                      (curPuuid == player.puuid ? "bg-gray-600" : "") +
-                      " w-64 mb-1 border cursor-pointer"
-                    }
-                    onClick={() => {
-                      setCurPuuid(player.puuid);
-                    }}
-                  >
-                    <img
-                      className="w-12 aspect-square inline"
-                      src={getAgentIconSrc(player.agent.name)}
-                    />
-                    <span className="ml-2">{player.name}</span>
-                  </div>
-                ))}
+              {bluePlayers.map((player) => (
+                <div
+                  className={
+                    (curPuuid == player.puuid ? "bg-gray-600" : "") +
+                    " w-64 mb-1 border cursor-pointer"
+                  }
+                  onClick={() => {
+                    setCurPuuid(player.puuid);
+                  }}
+                >
+                  <img
+                    className="w-12 aspect-square inline"
+                    src={getAgentIconSrc(player.agent.name)}
+                  />
+                  <span className="ml-2">{player.name}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -228,7 +257,6 @@ function getHeatmapPoints(
     ) {
       continue;
     }
-
     // filter for attack/defend
     if (
       !(
@@ -238,6 +266,19 @@ function getHeatmapPoints(
         ((filters.AttackDefend == FilterAttackDefend.Defense ||
           filters.AttackDefend == FilterAttackDefend.Both) &&
           !isAttacking(startTeam, kill.round))
+      )
+    ) {
+      continue;
+    }
+    // filter for pre/post plant
+    if (
+      !(
+        ((filters.PrePostPlant == FilterPrePostPlant.Preplant ||
+          filters.PrePostPlant == FilterPrePostPlant.Both) &&
+          !isPostPlantKill(matchData, kill)) ||
+        ((filters.PrePostPlant == FilterPrePostPlant.Postplant ||
+          filters.PrePostPlant == FilterPrePostPlant.Both) &&
+          isPostPlantKill(matchData, kill))
       )
     ) {
       continue;
@@ -308,7 +349,7 @@ function getPlayerStartTeam(matchData: MatchTypes.Match, puuid: string) {
   return MatchTypes.TeamID.Red;
 }
 
-function isAttacking(startTeam: MatchTypes.TeamID, roundNumber: number) {
+function isAttacking(startTeam: MatchTypes.TeamID, roundNumber: number): boolean {
   // if the players starting team was red, then they start attack for first half (12 rounds)
   // in overtime (rounds >= 25) red attacks, then defends next round, continuing by alternating
   // thus the modulo statement. eg. 25 % 2 == 1, 25 % 2 == 0
@@ -318,8 +359,41 @@ function isAttacking(startTeam: MatchTypes.TeamID, roundNumber: number) {
     (startTeam == MatchTypes.TeamID.Red && roundNumber > 24 && roundNumber % 2 == 1) ||
     (startTeam == MatchTypes.TeamID.Blue && roundNumber > 12 && roundNumber <= 24) ||
     (startTeam == MatchTypes.TeamID.Blue && roundNumber > 24 && roundNumber % 2 == 0)
-  )
+  ) {
     return true;
+  }
+  return false;
+}
+
+function isPostPlantKill(matchData: MatchTypes.Match, kill: MatchTypes.Kill): boolean {
+  // if bomb was never planted then every kill is preplant
+  if (matchData.rounds[kill.round].plant == null) {
+    return false;
+  }
+  // if plant was after this kill event then it is a preplant kill
+  if (matchData.rounds[kill.round].plant!.round_time_in_ms > kill.time_in_round_in_ms) {
+    return false;
+  }
+  return true;
+}
+
+function splitPlayersByTeam(
+  players: MatchTypes.Player[]
+): [MatchTypes.Player[], MatchTypes.Player[]] {
+  let redPlayers = [];
+  let bluePlayers = [];
+
+  for (let i = 0; i < players.length; i++) {
+    const player = players[i];
+
+    if (player.team_id == MatchTypes.TeamID.Red) {
+      redPlayers.push(players[i]);
+    } else if (player.team_id == MatchTypes.TeamID.Blue) {
+      bluePlayers.push(players[i]);
+    }
+  }
+
+  return [redPlayers, bluePlayers];
 }
 
 export default OverlayHeatmapTab;

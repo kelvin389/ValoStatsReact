@@ -189,12 +189,12 @@ export interface Round {
   result: Result;
   ceremony: string;
   winning_team: TeamID;
-  plant: Defuse | null;
-  defuse: Defuse | null;
+  plant: SpikeInfo | null;
+  defuse: SpikeInfo | null;
   stats: RoundStats[];
 }
 
-export interface Defuse {
+export interface SpikeInfo {
   round_time_in_ms: number;
   location: Location;
   player: KillPlayer;
