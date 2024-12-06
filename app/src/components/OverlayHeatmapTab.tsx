@@ -5,7 +5,6 @@ import { getMinimapData } from "../utils/MinimapData";
 import { getAgentIconSrc } from "../utils/StringToImage";
 import * as MapDatTypes from "../types/MapDatTypes";
 import * as HeatmapConstants from "../constants/HeatmapConstants";
-import Match from "./Match";
 
 interface OverlayHeatmapTabProps {
   matchData: MatchTypes.Match;
