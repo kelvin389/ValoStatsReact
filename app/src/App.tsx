@@ -182,6 +182,8 @@ function App() {
         <div className="text-center">
           <LoadMoreButton hide={puuid == ""} loading={loadingMatches} onClick={getMatchHistory} />
         </div>
+        {/* padding at bottom of page to allow scrolling further */}
+        <div className="mb-64"></div>
       </div>
 
       {/*

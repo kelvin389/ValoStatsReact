@@ -12,6 +12,7 @@ export default {
       },
       screens: {
         xs: "500px",
+        mdplus: "800px",
       },
       spacing: {
         searchbar: "24px",

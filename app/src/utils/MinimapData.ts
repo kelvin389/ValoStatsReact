@@ -1,5 +1,5 @@
 import { MinimapIcons } from "../assets/images/minimaps";
-import mapDat from "../assets/mapdat.json";
+import mapDat from "../assets/json/maps.json";
 import * as MapDatTypes from "../types/MapDatTypes";
 
 function getMinimapData(mapName: string) {

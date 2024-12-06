@@ -172,6 +172,7 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
                   onClick={() => {
                     setCurPuuid(player.puuid);
                   }}
+                  key={player.puuid}
                 >
                   <img
                     className="w-12 aspect-square inline"
@@ -191,6 +192,7 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
                   onClick={() => {
                     setCurPuuid(player.puuid);
                   }}
+                  key={player.puuid}
                 >
                   <img
                     className="w-12 aspect-square inline"

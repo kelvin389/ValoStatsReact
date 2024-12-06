@@ -78,7 +78,7 @@ function Match(props: MatchProps) {
       onClick={() => props.showOverlayCallback(match)}
     >
       <div className="flex mb-4 md:mb-0 md:w-[45%] justify-between">
-        <div className="inline-block mx-auto md:mx-0 md:mr-4">
+        <div className="mx-auto md:mx-0 md:mr-4 flex items-center">
           <img
             src={getAgentIconSrc(myPlayer.agent.name)}
             alt={myPlayer.agent.name + " agent icon"}
@@ -87,14 +87,14 @@ function Match(props: MatchProps) {
           <img
             src={getRankIconSrc(myPlayer.tier.id)}
             alt={myPlayer.tier.name + " rank icon"}
-            className="aspect-square w-12 inline-block"
+            className="aspect-square w-12 inline-block ml-2"
           />
         </div>
         <div className="inline-flex items-center mx-auto md:mx-0 flex-grow text-center">
-          <div className="text-xl xs:text-2xl w-1/2">
+          <div className="text-2xl md:text-xl mdplus:text-2xl w-1/2">
             {myTeamData.rounds.won + ":" + myTeamData.rounds.lost}
           </div>
-          <div className="text-xl xs:text-2xl w-1/2">
+          <div className="text-2xl md:text-xl mdplus:text-2xl w-1/2">
             {myPlayer.stats.kills + "/" + myPlayer.stats.deaths + "/" + myPlayer.stats.assists}
           </div>
         </div>

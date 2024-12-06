@@ -1,6 +1,6 @@
-Port and more(?) complete version of my ValoStats app to Typescript using Express/React using [HenrikDev Unofficial Valorant API](https://github.com/Henrik-3/unofficial-valorant-api).
+Port and more complete/extended version of my ValoStats app to Typescript using Express/React using [HenrikDev Unofficial Valorant API](https://github.com/Henrik-3/unofficial-valorant-api).
 
-Simple app made for fun to view Valorant statistics, extensible to view any statistic that can be calculated using the data provided by the Valorant API. Eg. RWF, RLF, Eco frags are stats that are not available to view on sites like Tracker Network
+Simple app made for fun to view Valorant statistics, extensible to view any statistic that can be calculated using the data provided by the Valorant API. Eg. RWF, RLF, Eco frags are stats that are not available to view on sites like Tracker Network. Also features a heatmap feature to see where a player frequently is during kills/deaths.
 
 Only tested running in dev mode, little to no error handling exists. Deathmatch and other gamemodes probably dont work either
 
