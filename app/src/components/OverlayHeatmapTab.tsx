@@ -83,11 +83,13 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
 
   // initialize heatmap
   useEffect(() => {
-    heatmapRef.current = new HeatMap({
-      container: heatmapDivRef.current!,
-      radius: HeatmapConstants.RADIUS,
-      maxOpacity: HeatmapConstants.MAX_OPACITY,
-    });
+    if (heatmapRef.current == null) {
+      heatmapRef.current = new HeatMap({
+        container: heatmapDivRef.current!,
+        radius: HeatmapConstants.RADIUS,
+        maxOpacity: HeatmapConstants.MAX_OPACITY,
+      });
+    }
     const init_pts = getHeatmapPoints(matchData, minimapData, curPuuid, filters);
     updateHeatmap(init_pts, heatmapRef);
   }, []);
