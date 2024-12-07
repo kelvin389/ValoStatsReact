@@ -1,41 +1,23 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as MatchTypes from "../types/MatchTypes";
 import HeatMap from "heatmap-ts";
 import { getMinimapData } from "../utils/MinimapData";
 import { getAgentIconSrc } from "../utils/StringToImage";
-import * as MapDatTypes from "../types/MapDatTypes";
 import * as HeatmapConstants from "../constants/HeatmapConstants";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css"; // css that must be imported to correctly draw slider
+import {
+  splitPlayersByTeam,
+  formatTime,
+  getHeatmapPoints,
+  generateAndSetHeatmap,
+  updateHeatmap,
+} from "../utils/HeatmapUtils";
+import * as HeatmapTypes from "../types/HeatmapTypes";
 
 interface OverlayHeatmapTabProps {
   matchData: MatchTypes.Match;
   puuid: string;
-}
-
-interface Filters {
-  KillDeath: FilterKillDeath;
-  AttackDefend: FilterAttackDefend;
-  PrePostPlant: FilterPrePostPlant;
-  TimeRange: [number, number];
-}
-
-enum FilterKillDeath {
-  Kill = 0,
-  Death = 1,
-  Both = 2,
-}
-
-enum FilterAttackDefend {
-  Attack = 0,
-  Defense = 1,
-  Both = 2,
-}
-
-enum FilterPrePostPlant {
-  Preplant = 0,
-  Postplant = 1,
-  Both = 2,
 }
 
 function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
@@ -49,26 +31,26 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
   const [curPuuid, setCurPuuid] = useState<string>(props.puuid);
 
   // initial filter states
-  const [filters, setFilters] = useState<Filters>({
-    KillDeath: FilterKillDeath.Both,
-    AttackDefend: FilterAttackDefend.Both,
-    PrePostPlant: FilterPrePostPlant.Both,
+  const [filters, setFilters] = useState<HeatmapTypes.Filters>({
+    KillDeath: HeatmapTypes.FilterKillDeath.Both,
+    AttackDefend: HeatmapTypes.FilterAttackDefend.Both,
+    PrePostPlant: HeatmapTypes.FilterPrePostPlant.Both,
     TimeRange: [HeatmapConstants.TIME_MIN, HeatmapConstants.TIME_MAX],
   });
 
-  function updateFilterKillDeath(newVal: FilterKillDeath) {
+  function updateFilterKillDeath(newVal: HeatmapTypes.FilterKillDeath) {
     setFilters((old) => ({
       ...old,
       KillDeath: newVal,
     }));
   }
-  function updateFilterAttackDefend(newVal: FilterAttackDefend) {
+  function updateFilterAttackDefend(newVal: HeatmapTypes.FilterAttackDefend) {
     setFilters((old) => ({
       ...old,
       AttackDefend: newVal,
     }));
   }
-  function updateFilterPrePostPlant(newVal: FilterPrePostPlant) {
+  function updateFilterPrePostPlant(newVal: HeatmapTypes.FilterPrePostPlant) {
     setFilters((old) => ({
       ...old,
       PrePostPlant: newVal,
@@ -119,30 +101,31 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
                 {/* yeah these should probably be components but whatever */}
                 <button
                   className={
-                    (filters.KillDeath == FilterKillDeath.Kill ? highlightStyle : "") +
+                    (filters.KillDeath == HeatmapTypes.FilterKillDeath.Kill ? highlightStyle : "") +
                     allButtonStyle +
                     leftButtonStyle
                   }
-                  onClick={() => updateFilterKillDeath(FilterKillDeath.Kill)}
+                  onClick={() => updateFilterKillDeath(HeatmapTypes.FilterKillDeath.Kill)}
                 >
                   Kills
                 </button>
                 <button
                   className={
-                    (filters.KillDeath == FilterKillDeath.Death ? highlightStyle : "") +
-                    allButtonStyle
+                    (filters.KillDeath == HeatmapTypes.FilterKillDeath.Death
+                      ? highlightStyle
+                      : "") + allButtonStyle
                   }
-                  onClick={() => updateFilterKillDeath(FilterKillDeath.Death)}
+                  onClick={() => updateFilterKillDeath(HeatmapTypes.FilterKillDeath.Death)}
                 >
                   Deaths
                 </button>
                 <button
                   className={
-                    (filters.KillDeath == FilterKillDeath.Both ? highlightStyle : "") +
+                    (filters.KillDeath == HeatmapTypes.FilterKillDeath.Both ? highlightStyle : "") +
                     allButtonStyle +
                     rightButtonStyle
                   }
-                  onClick={() => updateFilterKillDeath(FilterKillDeath.Both)}
+                  onClick={() => updateFilterKillDeath(HeatmapTypes.FilterKillDeath.Both)}
                 >
                   Both
                 </button>
@@ -150,30 +133,35 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
               <div className="flex items-center justify-center">
                 <button
                   className={
-                    (filters.AttackDefend == FilterAttackDefend.Attack ? highlightStyle : "") +
+                    (filters.AttackDefend == HeatmapTypes.FilterAttackDefend.Attack
+                      ? highlightStyle
+                      : "") +
                     allButtonStyle +
                     leftButtonStyle
                   }
-                  onClick={() => updateFilterAttackDefend(FilterAttackDefend.Attack)}
+                  onClick={() => updateFilterAttackDefend(HeatmapTypes.FilterAttackDefend.Attack)}
                 >
                   Attack
                 </button>
                 <button
                   className={
-                    (filters.AttackDefend == FilterAttackDefend.Defense ? highlightStyle : "") +
-                    allButtonStyle
+                    (filters.AttackDefend == HeatmapTypes.FilterAttackDefend.Defense
+                      ? highlightStyle
+                      : "") + allButtonStyle
                   }
-                  onClick={() => updateFilterAttackDefend(FilterAttackDefend.Defense)}
+                  onClick={() => updateFilterAttackDefend(HeatmapTypes.FilterAttackDefend.Defense)}
                 >
                   Defense
                 </button>
                 <button
                   className={
-                    (filters.AttackDefend == FilterAttackDefend.Both ? highlightStyle : "") +
+                    (filters.AttackDefend == HeatmapTypes.FilterAttackDefend.Both
+                      ? highlightStyle
+                      : "") +
                     allButtonStyle +
                     rightButtonStyle
                   }
-                  onClick={() => updateFilterAttackDefend(FilterAttackDefend.Both)}
+                  onClick={() => updateFilterAttackDefend(HeatmapTypes.FilterAttackDefend.Both)}
                 >
                   Both
                 </button>
@@ -181,30 +169,37 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
               <div className="flex items-center justify-center">
                 <button
                   className={
-                    (filters.PrePostPlant == FilterPrePostPlant.Preplant ? highlightStyle : "") +
+                    (filters.PrePostPlant == HeatmapTypes.FilterPrePostPlant.Preplant
+                      ? highlightStyle
+                      : "") +
                     allButtonStyle +
                     leftButtonStyle
                   }
-                  onClick={() => updateFilterPrePostPlant(FilterPrePostPlant.Preplant)}
+                  onClick={() => updateFilterPrePostPlant(HeatmapTypes.FilterPrePostPlant.Preplant)}
                 >
                   Pre-Plant
                 </button>
                 <button
                   className={
-                    (filters.PrePostPlant == FilterPrePostPlant.Postplant ? highlightStyle : "") +
-                    allButtonStyle
+                    (filters.PrePostPlant == HeatmapTypes.FilterPrePostPlant.Postplant
+                      ? highlightStyle
+                      : "") + allButtonStyle
                   }
-                  onClick={() => updateFilterPrePostPlant(FilterPrePostPlant.Postplant)}
+                  onClick={() =>
+                    updateFilterPrePostPlant(HeatmapTypes.FilterPrePostPlant.Postplant)
+                  }
                 >
                   Post-Plant
                 </button>
                 <button
                   className={
-                    (filters.PrePostPlant == FilterPrePostPlant.Both ? highlightStyle : "") +
+                    (filters.PrePostPlant == HeatmapTypes.FilterPrePostPlant.Both
+                      ? highlightStyle
+                      : "") +
                     allButtonStyle +
                     rightButtonStyle
                   }
-                  onClick={() => updateFilterPrePostPlant(FilterPrePostPlant.Both)}
+                  onClick={() => updateFilterPrePostPlant(HeatmapTypes.FilterPrePostPlant.Both)}
                 >
                   Both
                 </button>
@@ -285,199 +280,6 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
       </div>
     </>
   );
-}
-
-function getHeatmapPoints(
-  matchData: MatchTypes.Match,
-  minimapData: MapDatTypes.MinimapData,
-  puuid: string,
-  filters: Filters
-) {
-  let points = [];
-
-  const startTeam = getPlayerStartTeam(matchData, puuid);
-
-  // iterate every kill that occurred in this match
-  for (let i = 0; i < matchData.kills.length; i++) {
-    const kill = matchData.kills[i];
-
-    /*************
-    the filters below use guard statements to calculate whether
-    we pass the filter or not. to explain:
-
-      if (
-        !(
-          ( ... && ... ) ||   <--- this section checks if we PASS the filter
-          ( ... && ... )
-        )                     <--- then this flips the above boolean, ie. TRUE if we FAIL the filter
-      ) {                     <--- and this boolean gets passed into the if statement
-        continue;             <--- thus we continue (ie. don't process this round) if the FAIL the filter
-      }
-
-    ***************/
-
-    // filter for kill/death
-    if (
-      !(
-        ((filters.KillDeath == FilterKillDeath.Kill || filters.KillDeath == FilterKillDeath.Both) &&
-          kill.killer.puuid == puuid) ||
-        ((filters.KillDeath == FilterKillDeath.Death ||
-          filters.KillDeath == FilterKillDeath.Both) &&
-          kill.victim.puuid == puuid)
-      )
-    ) {
-      continue;
-    }
-    // filter for attack/defend
-    if (
-      !(
-        ((filters.AttackDefend == FilterAttackDefend.Attack ||
-          filters.AttackDefend == FilterAttackDefend.Both) &&
-          isAttacking(startTeam, kill.round)) ||
-        ((filters.AttackDefend == FilterAttackDefend.Defense ||
-          filters.AttackDefend == FilterAttackDefend.Both) &&
-          !isAttacking(startTeam, kill.round))
-      )
-    ) {
-      continue;
-    }
-    // filter for pre/post plant
-    if (
-      !(
-        ((filters.PrePostPlant == FilterPrePostPlant.Preplant ||
-          filters.PrePostPlant == FilterPrePostPlant.Both) &&
-          !isPostPlantKill(matchData, kill)) ||
-        ((filters.PrePostPlant == FilterPrePostPlant.Postplant ||
-          filters.PrePostPlant == FilterPrePostPlant.Both) &&
-          isPostPlantKill(matchData, kill))
-      )
-    ) {
-      continue;
-    }
-    // filter for time range
-    const killTimeSec = kill.time_in_round_in_ms / 1000; // convert ms to sec
-    if (!(filters.TimeRange[0] <= killTimeSec && killTimeSec <= filters.TimeRange[1])) {
-      continue;
-    }
-
-    const dataPt = {
-      // calculations based on following discord message in HenrikDev Systems discord
-      // additionally add floor because heatmap library doesnt work with decimals (why?)
-      //
-      // https://discord.com/channels/704231681309278228/1180628918584213594/1180628918584213594
-      /*
-            The values needed to translate in game coordinates to the mini-maps are the Riot official data. You can get them right off the maps info at: https://dash.valorant-api.com/endpoints/maps   xMultiplier and xScalarToAdd are the fields (or y versions).
-
-            The way to translate in mostly straightforward however the swapping of game_y and game_x at the very start is likely what screwed people previously:
-            IMPORTANT: The swap of game_x and game_y at the start is correct.
-
-            x = game_y * valorant-api_map_x_multiplier + valorant-api_map_x_scalar_add;
-            y = game_x * valorant-api_map_y_multiplier + valorant-api_map_y_scalar_add;
-
-            x *= image.Width;
-            y *= image.Height;
-        */
-      x: Math.floor(
-        (kill.location.y * minimapData.xMultiplier + minimapData.xScalar) *
-          HeatmapConstants.MINIMAP_X_PX
-      ),
-      y: Math.floor(
-        (kill.location.x * minimapData.yMultiplier + minimapData.yScalar) *
-          HeatmapConstants.MINIMAP_Y_PX
-      ),
-      value: 1,
-    };
-
-    points.push(dataPt);
-  }
-  return points;
-}
-
-function updateHeatmap(points: any[], heatmapRef: MutableRefObject<HeatMap | null>) {
-  if (heatmapRef == null) {
-    return;
-  }
-  heatmapRef.current!.setData({
-    max: HeatmapConstants.MAX,
-    min: 0,
-    data: points,
-  });
-}
-
-function generateAndSetHeatmap(
-  matchData: MatchTypes.Match,
-  minimapData: MapDatTypes.MinimapData,
-  puuid: string,
-  heatmapRef: MutableRefObject<HeatMap | null>,
-  filters: Filters
-) {
-  const points = getHeatmapPoints(matchData, minimapData, puuid, filters);
-  updateHeatmap(points, heatmapRef);
-}
-
-function getPlayerStartTeam(matchData: MatchTypes.Match, puuid: string) {
-  for (let i = 0; i < matchData.players.length; i++) {
-    const player = matchData.players[i];
-    if (player.puuid == puuid) {
-      return player.team_id;
-    }
-  }
-  return MatchTypes.TeamID.Red;
-}
-
-function isAttacking(startTeam: MatchTypes.TeamID, roundNumber: number): boolean {
-  // if the players starting team was red, then they start attack for first half (12 rounds)
-  // in overtime (rounds >= 25) red attacks, then defends next round, continuing by alternating
-  // thus the modulo statement. eg. 25 % 2 == 1, 25 % 2 == 0
-  // then the opposite is done for blue team.
-  if (
-    (startTeam == MatchTypes.TeamID.Red && roundNumber <= 12) ||
-    (startTeam == MatchTypes.TeamID.Red && roundNumber > 24 && roundNumber % 2 == 1) ||
-    (startTeam == MatchTypes.TeamID.Blue && roundNumber > 12 && roundNumber <= 24) ||
-    (startTeam == MatchTypes.TeamID.Blue && roundNumber > 24 && roundNumber % 2 == 0)
-  ) {
-    return true;
-  }
-  return false;
-}
-
-function isPostPlantKill(matchData: MatchTypes.Match, kill: MatchTypes.Kill): boolean {
-  // if bomb was never planted then every kill is preplant
-  if (matchData.rounds[kill.round].plant == null) {
-    return false;
-  }
-  // if plant was after this kill event then it is a preplant kill
-  if (matchData.rounds[kill.round].plant!.round_time_in_ms > kill.time_in_round_in_ms) {
-    return false;
-  }
-  return true;
-}
-
-function splitPlayersByTeam(
-  players: MatchTypes.Player[]
-): [MatchTypes.Player[], MatchTypes.Player[]] {
-  let redPlayers = [];
-  let bluePlayers = [];
-
-  for (let i = 0; i < players.length; i++) {
-    const player = players[i];
-
-    if (player.team_id == MatchTypes.TeamID.Red) {
-      redPlayers.push(players[i]);
-    } else if (player.team_id == MatchTypes.TeamID.Blue) {
-      bluePlayers.push(players[i]);
-    }
-  }
-
-  return [redPlayers, bluePlayers];
-}
-
-// format from seconds to "minutes:seconds"
-function formatTime(sec: number): string {
-  const minutes = Math.floor(sec / 60);
-  const remainingSeconds = sec % 60;
-
-  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 }
 
 export default OverlayHeatmapTab;
