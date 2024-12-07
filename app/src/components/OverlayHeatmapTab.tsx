@@ -269,14 +269,18 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
             </div>
           </div>
         </div>
-        <div className="m-auto border">
-          <div
-            className="w-[512px] h-[512px] bg-cover"
-            style={{
-              backgroundImage: `url(${minimapData.icon})`,
-            }}
-            ref={heatmapDivRef}
-          ></div>
+
+        <div className="flex flex-col">
+          <div className="m-auto border">
+            <div
+              className="w-[512px] h-[512px] bg-cover"
+              style={{
+                backgroundImage: `url(${minimapData.icon})`,
+              }}
+              ref={heatmapDivRef}
+            ></div>
+          </div>
+          <div className="text-center text-3xl mt-2">{matchData.metadata.map.name}</div>
         </div>
       </div>
     </>
