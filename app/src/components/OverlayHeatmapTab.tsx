@@ -83,6 +83,8 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
 
   // initialize heatmap
   useEffect(() => {
+    // this if statement prevents initialization of
+    // 2 heatmaps when strict mode is enabled
     if (heatmapRef.current == null) {
       heatmapRef.current = new HeatMap({
         container: heatmapDivRef.current!,
