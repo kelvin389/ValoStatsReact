@@ -3,7 +3,6 @@ import * as MatchTypes from "../types/MatchTypes";
 import HeatMap from "heatmap-ts";
 import * as MapDatTypes from "../types/MapDatTypes";
 import * as HeatmapConstants from "../constants/HeatmapConstants";
-import "rc-slider/assets/index.css"; // css that must be imported to correctly draw slider
 import * as HeatmapTypes from "../types/HeatmapTypes";
 
 function getHeatmapPoints(
