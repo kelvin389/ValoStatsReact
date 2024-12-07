@@ -56,9 +56,7 @@ Python scripts used for lazy method of updating data from [valorant-api.com](htt
 
    1. Navigate to directory
       ```
-      cd app
-      cd src
-      cd assets
+      cd app/src/assets
       ```
    1. Install dependencies
       ```
