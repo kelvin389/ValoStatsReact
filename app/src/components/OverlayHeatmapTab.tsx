@@ -5,6 +5,8 @@ import { getMinimapData } from "../utils/MinimapData";
 import { getAgentIconSrc } from "../utils/StringToImage";
 import * as MapDatTypes from "../types/MapDatTypes";
 import * as HeatmapConstants from "../constants/HeatmapConstants";
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css"; // css that must be imported to correctly draw slider
 
 interface OverlayHeatmapTabProps {
   matchData: MatchTypes.Match;
@@ -15,6 +17,7 @@ interface Filters {
   KillDeath: FilterKillDeath;
   AttackDefend: FilterAttackDefend;
   PrePostPlant: FilterPrePostPlant;
+  TimeRange: [number, number];
 }
 
 enum FilterKillDeath {
@@ -50,6 +53,7 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
     KillDeath: FilterKillDeath.Both,
     AttackDefend: FilterAttackDefend.Both,
     PrePostPlant: FilterPrePostPlant.Both,
+    TimeRange: [HeatmapConstants.TIME_MIN, HeatmapConstants.TIME_MAX],
   });
 
   function updateFilterKillDeath(newVal: FilterKillDeath) {
@@ -68,6 +72,12 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
     setFilters((old) => ({
       ...old,
       PrePostPlant: newVal,
+    }));
+  }
+  function updateTimeRange(newVal: [number, number]) {
+    setFilters((old) => ({
+      ...old,
+      TimeRange: newVal,
     }));
   }
 
@@ -89,79 +99,130 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
 
   const [redPlayers, bluePlayers] = splitPlayersByTeam(matchData.players);
 
+  const highlightStyle = " bg-gray-500";
+  const leftButtonStyle = " rounded-l-lg";
+  const rightButtonStyle = " rounded-r-lg";
+  const allButtonStyle = " px-2";
+
   return (
     <>
       <div className="grid grid-cols-2 mt-4">
-        <div className="grid grid-rows-2">
-          <div className="w-full border">
-            FILTERS:::::
-            <div className="w-full">
-              <button
-                className={filters.KillDeath == FilterKillDeath.Kill ? "bg-gray-600" : ""}
-                onClick={() => updateFilterKillDeath(FilterKillDeath.Kill)}
-              >
-                kills
-              </button>
-              <button
-                className={filters.KillDeath == FilterKillDeath.Death ? "bg-gray-600" : ""}
-                onClick={() => updateFilterKillDeath(FilterKillDeath.Death)}
-              >
-                deaths
-              </button>
-              <button
-                className={filters.KillDeath == FilterKillDeath.Both ? "bg-gray-600" : ""}
-                onClick={() => updateFilterKillDeath(FilterKillDeath.Both)}
-              >
-                both
-              </button>
-              {filters.KillDeath}
-            </div>
-            <div className="w-full">
-              <button
-                className={filters.AttackDefend == FilterAttackDefend.Attack ? "bg-gray-600" : ""}
-                onClick={() => updateFilterAttackDefend(FilterAttackDefend.Attack)}
-              >
-                attack
-              </button>
-              <button
-                className={filters.AttackDefend == FilterAttackDefend.Defense ? "bg-gray-600" : ""}
-                onClick={() => updateFilterAttackDefend(FilterAttackDefend.Defense)}
-              >
-                defend
-              </button>
-              <button
-                className={filters.AttackDefend == FilterAttackDefend.Both ? "bg-gray-600" : ""}
-                onClick={() => updateFilterAttackDefend(FilterAttackDefend.Both)}
-              >
-                both
-              </button>
-              {filters.AttackDefend}
-            </div>
-            <div className="w-full">
-              <button
-                className={filters.PrePostPlant == FilterPrePostPlant.Preplant ? "bg-gray-600" : ""}
-                onClick={() => updateFilterPrePostPlant(FilterPrePostPlant.Preplant)}
-              >
-                preplant
-              </button>
-              <button
-                className={
-                  filters.PrePostPlant == FilterPrePostPlant.Postplant ? "bg-gray-600" : ""
-                }
-                onClick={() => updateFilterPrePostPlant(FilterPrePostPlant.Postplant)}
-              >
-                postplant
-              </button>
-              <button
-                className={filters.PrePostPlant == FilterPrePostPlant.Both ? "bg-gray-600" : ""}
-                onClick={() => updateFilterPrePostPlant(FilterPrePostPlant.Both)}
-              >
-                both
-              </button>
-              {filters.PrePostPlant}
+        <div className="flex flex-col">
+          <div className="border flex flex-col pt-2 pb-4">
+            <div className="text-center text-2xl">Filters</div>
+            <div className="grid grid-cols-2 grid-rows-2 mt-1">
+              <div className="flex items-center justify-center">
+                {/* yeah these should probably be components but whatever */}
+                <button
+                  className={
+                    (filters.KillDeath == FilterKillDeath.Kill ? highlightStyle : "") +
+                    allButtonStyle +
+                    leftButtonStyle
+                  }
+                  onClick={() => updateFilterKillDeath(FilterKillDeath.Kill)}
+                >
+                  Kills
+                </button>
+                <button
+                  className={
+                    (filters.KillDeath == FilterKillDeath.Both ? highlightStyle : "") +
+                    allButtonStyle
+                  }
+                  onClick={() => updateFilterKillDeath(FilterKillDeath.Both)}
+                >
+                  Both
+                </button>
+                <button
+                  className={
+                    (filters.KillDeath == FilterKillDeath.Death ? highlightStyle : "") +
+                    allButtonStyle +
+                    rightButtonStyle
+                  }
+                  onClick={() => updateFilterKillDeath(FilterKillDeath.Death)}
+                >
+                  Deaths
+                </button>
+              </div>
+              <div className="flex items-center justify-center">
+                <button
+                  className={
+                    (filters.AttackDefend == FilterAttackDefend.Attack ? highlightStyle : "") +
+                    allButtonStyle +
+                    leftButtonStyle
+                  }
+                  onClick={() => updateFilterAttackDefend(FilterAttackDefend.Attack)}
+                >
+                  Attack
+                </button>
+                <button
+                  className={
+                    (filters.AttackDefend == FilterAttackDefend.Both ? highlightStyle : "") +
+                    allButtonStyle
+                  }
+                  onClick={() => updateFilterAttackDefend(FilterAttackDefend.Both)}
+                >
+                  Both
+                </button>
+                <button
+                  className={
+                    (filters.AttackDefend == FilterAttackDefend.Defense ? highlightStyle : "") +
+                    allButtonStyle +
+                    rightButtonStyle
+                  }
+                  onClick={() => updateFilterAttackDefend(FilterAttackDefend.Defense)}
+                >
+                  Defense
+                </button>
+              </div>
+              <div className="flex items-center justify-center">
+                <button
+                  className={
+                    (filters.PrePostPlant == FilterPrePostPlant.Preplant ? highlightStyle : "") +
+                    allButtonStyle +
+                    leftButtonStyle
+                  }
+                  onClick={() => updateFilterPrePostPlant(FilterPrePostPlant.Preplant)}
+                >
+                  Pre-Plant
+                </button>
+                <button
+                  className={
+                    (filters.PrePostPlant == FilterPrePostPlant.Both ? highlightStyle : "") +
+                    allButtonStyle
+                  }
+                  onClick={() => updateFilterPrePostPlant(FilterPrePostPlant.Both)}
+                >
+                  Both
+                </button>
+                <button
+                  className={
+                    (filters.PrePostPlant == FilterPrePostPlant.Postplant ? highlightStyle : "") +
+                    allButtonStyle +
+                    rightButtonStyle
+                  }
+                  onClick={() => updateFilterPrePostPlant(FilterPrePostPlant.Postplant)}
+                >
+                  Post-Plant
+                </button>
+              </div>
+              <div className="flex items-center justify-center text-center">
+                <div className="w-48">
+                  Round Time
+                  <Slider
+                    range
+                    min={HeatmapConstants.TIME_MIN}
+                    max={HeatmapConstants.TIME_MAX}
+                    step={5}
+                    pushable
+                    value={filters.TimeRange}
+                    onChange={(newTimeRange) => updateTimeRange(newTimeRange as [number, number])}
+                  />
+                  {formatTime(filters.TimeRange[0]) + " - " + formatTime(filters.TimeRange[1])}
+                </div>
+              </div>
             </div>
           </div>
-          <div className="w-full grid grid-cols-2 mt-1">
+          <div className="w-full grid grid-cols-2 my-auto">
             <div className="mx-auto">
               {redPlayers.map((player) => (
                 <div
@@ -285,6 +346,11 @@ function getHeatmapPoints(
     ) {
       continue;
     }
+    // filter for time range
+    const killTimeSec = kill.time_in_round_in_ms / 1000; // convert ms to sec
+    if (!(filters.TimeRange[0] <= killTimeSec && killTimeSec <= filters.TimeRange[1])) {
+      continue;
+    }
 
     const dataPt = {
       // calculations based on following discord message in HenrikDev Systems discord
@@ -396,6 +462,14 @@ function splitPlayersByTeam(
   }
 
   return [redPlayers, bluePlayers];
+}
+
+// format from seconds to "minutes:seconds"
+function formatTime(sec: number): string {
+  const minutes = Math.floor(sec / 60);
+  const remainingSeconds = sec % 60;
+
+  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 }
 
 export default OverlayHeatmapTab;
