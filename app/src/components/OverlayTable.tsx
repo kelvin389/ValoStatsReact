@@ -151,14 +151,14 @@ function OverlayTable(props: OverlayTableProps) {
       })
       .map((player) => ({
         highlight: player.puuid == props.puuid,
-        agent: player.character,
-        rank: player.currenttier,
+        agent: player.agent.name,
+        rank: player.tier.id,
         playerName: `${player.name}#${player.tag}`,
         acs: Math.round(player.stats.score / numRounds),
         kills: player.stats.kills,
         deaths: player.stats.deaths,
         assists: player.stats.assists,
-        adr: Math.round(player.damage_made / numRounds),
+        adr: Math.round(player.stats.damage.dealt / numRounds),
         roundWonFrags: getRoundWonFrags(player, data),
         roundLostFrags: getRoundLostFrags(player, data),
         eco: getEcoFrags(player, data),

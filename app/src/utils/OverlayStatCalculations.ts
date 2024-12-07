@@ -4,66 +4,57 @@ import {
   ECO_OP_MAX_LOADOUT_VAL,
 } from "../constants/StatCalculationConstants";
 
-function getRoundWonFrags(
-  player: MatchTypes.Player,
-  data: MatchTypes.Match
-): number {
+function getRoundWonFrags(player: MatchTypes.Player, data: MatchTypes.Match): number {
   const rounds = data.rounds;
 
   let rlf = 0;
   for (let i = 0; i < rounds.length; i++) {
-    const pStats = rounds[i].player_stats;
+    const pStats = rounds[i].stats;
 
     for (let j = 0; j < pStats.length; j++) {
       if (
-        player.puuid == pStats[j].player_puuid && // match player
-        player.team == rounds[i].winning_team // if won round
+        player.puuid == pStats[j].player.puuid && // match player
+        player.team_id == rounds[i].winning_team // if won round
       ) {
-        rlf += pStats[j].kills;
+        rlf += pStats[j].stats.kills;
       }
     }
   }
   return rlf;
 }
 
-function getRoundLostFrags(
-  player: MatchTypes.Player,
-  data: MatchTypes.Match
-): number {
+function getRoundLostFrags(player: MatchTypes.Player, data: MatchTypes.Match): number {
   const rounds = data.rounds;
 
   let rlf = 0;
   for (let i = 0; i < rounds.length; i++) {
-    const pStats = rounds[i].player_stats;
+    const pStats = rounds[i].stats;
 
     for (let j = 0; j < pStats.length; j++) {
       if (
-        player.puuid == pStats[j].player_puuid && // match player
-        player.team != rounds[i].winning_team // if won round
+        player.puuid == pStats[j].player.puuid && // match player
+        player.team_id != rounds[i].winning_team // if won round
       ) {
-        rlf += pStats[j].kills;
+        rlf += pStats[j].stats.kills;
       }
     }
   }
   return rlf;
 }
 
-function getEcoFrags(
-  player: MatchTypes.Player,
-  data: MatchTypes.Match
-): number {
+function getEcoFrags(player: MatchTypes.Player, data: MatchTypes.Match): number {
   const rounds = data.rounds;
 
   let ecos = 0;
   for (let i = 0; i < rounds.length; i++) {
-    const pStats = rounds[i].player_stats;
+    const pStats = rounds[i].stats;
 
     // measure team loadout value for my team and opponents team for round i
     let myTeamEco = 0;
     let opTeamEco = 0;
 
     for (let j = 0; j < pStats.length; j++) {
-      if (player.team == pStats[j].player_team) {
+      if (player.team_id == pStats[j].player.team) {
         myTeamEco += pStats[j].economy.loadout_value;
       } else {
         opTeamEco += pStats[j].economy.loadout_value;
@@ -72,11 +63,11 @@ function getEcoFrags(
 
     for (let j = 0; j < pStats.length; j++) {
       if (
-        player.puuid == pStats[j].player_puuid && // match player
+        player.puuid == pStats[j].player.puuid && // match player
         myTeamEco > ECO_MY_MIN_LOADOUT_VAL && // player team has at least min val
         opTeamEco < ECO_OP_MAX_LOADOUT_VAL // opponent team has at most max val
       ) {
-        ecos += pStats[j].kills;
+        ecos += pStats[j].stats.kills;
       }
     }
   }

@@ -15,16 +15,25 @@ function Match(props: MatchProps) {
   let myTeamData: MatchTypes.TeamData | null = null;
   let myPlayer: MatchTypes.Player | null = null;
 
-  for (let i = 0; i < match.players.all_players.length; i++) {
-    const player = match.players.all_players[i];
+  for (let i = 0; i < match.players.length; i++) {
+    const player = match.players[i];
     if (player.puuid == props.puuid) {
       myPlayer = player;
-      if (player.team == MatchTypes.TeamName.Blue) {
-        myTeamData = match.teams.blue;
+      if (player.team_id == MatchTypes.TeamID.Blue) {
+        for (let j = 0; j < match.teams.length; j++) {
+          if (match.teams[j].team_id == MatchTypes.TeamID.Blue) {
+            myTeamData = match.teams[j];
+            break;
+          }
+        }
       } else {
-        myTeamData = match.teams.red;
+        for (let j = 0; j < match.teams.length; j++) {
+          if (match.teams[j].team_id == MatchTypes.TeamID.Red) {
+            myTeamData = match.teams[j];
+            break;
+          }
+        }
       }
-
       break;
     }
   }
@@ -39,7 +48,7 @@ function Match(props: MatchProps) {
   }
 
   // calculate how long ago this game took place
-  const matchStartTime = match.metadata.game_start * 1000; // convert from seconds to ms since epoch
+  const matchStartTime = new Date(match.metadata.started_at).getTime(); // convert to ms since epoch from ISO 8601 format
   const curTime = Date.now();
 
   const diffMs = curTime - matchStartTime;
@@ -64,28 +73,28 @@ function Match(props: MatchProps) {
       className={
         "md:flex py-3 px-2 xs:px-5 my-1 border-2 md:border border-gray-100/50 rounded-sm h-36 md:h-24 cursor-pointer select-none " +
         " " +
-        (myTeamData.has_won ? "bg-emerald-600" : "bg-rose-800")
+        (myTeamData.won ? "bg-emerald-600" : "bg-rose-800")
       }
       onClick={() => props.showOverlayCallback(match)}
     >
       <div className="flex mb-4 md:mb-0 md:w-[45%] justify-between">
-        <div className="inline-block mx-auto md:mx-0 md:mr-4">
+        <div className="mx-auto md:mx-0 md:mr-4 flex items-center">
           <img
-            src={getAgentIconSrc(myPlayer.character)}
-            alt={myPlayer.character + " agent icon"}
+            src={getAgentIconSrc(myPlayer.agent.name)}
+            alt={myPlayer.agent.name + " agent icon"}
             className="rounded-full aspect-square min-w-16 max-w-16 inline-block"
           />
           <img
-            src={getRankIconSrc(myPlayer.currenttier)}
-            alt={myPlayer.currenttier_patched + " rank icon"}
-            className="aspect-square w-12 inline-block"
+            src={getRankIconSrc(myPlayer.tier.id)}
+            alt={myPlayer.tier.name + " rank icon"}
+            className="aspect-square w-12 inline-block ml-2"
           />
         </div>
         <div className="inline-flex items-center mx-auto md:mx-0 flex-grow text-center">
-          <div className="text-xl xs:text-2xl w-1/2">
-            {myTeamData.rounds_won + ":" + myTeamData.rounds_lost}
+          <div className="text-2xl md:text-xl mdplus:text-2xl w-1/2">
+            {myTeamData.rounds.won + ":" + myTeamData.rounds.lost}
           </div>
-          <div className="text-xl xs:text-2xl w-1/2">
+          <div className="text-2xl md:text-xl mdplus:text-2xl w-1/2">
             {myPlayer.stats.kills + "/" + myPlayer.stats.deaths + "/" + myPlayer.stats.assists}
           </div>
         </div>
@@ -95,10 +104,10 @@ function Match(props: MatchProps) {
           {timeAgoStr}
         </div>
         <div className="match-right inline-block w-28 text-center text-xs md:text-base">
-          {match.metadata.map}
+          {match.metadata.map.name}
         </div>
         <div className="match-right inline-block w-28 text-center text-xs md:text-base">
-          {match.metadata.mode}
+          {match.metadata.queue.name}
         </div>
       </div>
     </div>
