@@ -1,6 +1,13 @@
+# ValoStatsReact
+
 Port and more complete/extended version of my ValoStats app to Typescript using Express/React using [HenrikDev Unofficial Valorant API](https://github.com/Henrik-3/unofficial-valorant-api).
 
-Simple app made for fun to view Valorant statistics, extensible to view any statistic that can be calculated using the data provided by the Valorant API. Eg. RWF, RLF, Eco frags are stats that are not available to view on sites like Tracker Network. Also features a heatmap feature to see where a player frequently is during kills/deaths.
+App made for fun to view Valorant statistics, extensible to view any statistic that can be calculated using the data provided by the Valorant API.
+
+#### Features:
+
+- Scoreboard with calculated statistics not viewable on common stat websites (eg. Round won Frags, Round lost frags, Eco frags)
+- Heatmaps to see where a player frequently is during kills/deaths during a game
 
 Only tested running in dev mode, little to no error handling exists. Deathmatch and other gamemodes probably dont work either
 
@@ -9,8 +16,9 @@ Only tested running in dev mode, little to no error handling exists. Deathmatch 
 Client:
 
 - React
-  - [react-tooltip Component](https://www.npmjs.com/package/react-tooltip)
-  - [Tanstack react-table Component](https://www.npmjs.com/package/@tanstack/react-table)
+  - [react-tooltip](https://www.npmjs.com/package/react-tooltip)
+  - [Tanstack react-table](https://www.npmjs.com/package/@tanstack/react-table)
+  - [rc-slider](https://www.npmjs.com/package/rc-slider)
 - Vite
 - Tailwind
 - [heatmap-ts](https://www.npmjs.com/package/heatmap-ts) which is a typescript translation of [heatmapjs](https://www.npmjs.com/package/heatmapjs)
@@ -23,19 +31,54 @@ Python scripts used for lazy method of updating data from [valorant-api.com](htt
 
 ## Usage
 
+1. Clone the repository
+
+   ```
+   git clone https://github.com/kelvin389/ValoStatsReact
+   cd ValoStatsReact
+   ```
+
 1. Obtain api key ([HenrikDev Unofficial Valorant API](https://github.com/Henrik-3/unofficial-valorant-api) for more details)
 1. Enter root directory. create `.env` file with contents
    ```
    API_KEY=your-api-key-here
    PORT=some-port              (optional)
    ```
-1. install dependencies for client and server:
+1. Install dependencies for client and server:
 
    ```
    npm run install-all
    ```
 
-1. run:
+1. (Optional) Update assets:
+
+   Assets are already included in the repo but in the future if new ranks, agents, or maps are released then they can be updated here. App is not guaranteed to work in the future even if assets are able to be updated. The script to update assets directly from [valorant-api.com](https://valorant-api.com/) is located at `/app/src/assets/update_assets.py`. To use:
+
+   1. Navigate to directory
+      ```
+      cd app
+      cd src
+      cd assets
+      ```
+   1. Install dependencies
+      ```
+      pip install -r requirements.txt
+      ```
+   1. Run the script with args to choose what to update
+      ```
+      python update_assets.py [arg(s)]
+      ```
+      Valid args:
+      - all
+      - maps
+      - agents
+      - ranks
+   1. Return to root directory
+      ```
+      cd ../../..
+      ```
+
+1. Run app and server:
 
    ```
    npm run dev
@@ -61,3 +104,7 @@ Other peoples names censored for privacy
 
 ![demo gif 3](./demogifs/demo3.gif)
 ![demo gif 4](./demogifs/demo4.gif)
+
+### Heatmaps and filtering
+
+![demo gif 5](./demogifs/demo5.gif)
