@@ -3,14 +3,12 @@ import LoadMoreButton from "./components/LoadMoreButton";
 import Match from "./components/Match";
 import * as MatchTypes from "./types/MatchTypes";
 import Overlay from "./components/Overlay";
+import * as QueryConstants from "./constants/QueryConstants";
 
 function App() {
-  // gets matches from index 0->BATCH_SIZE, then BATCH_SIZE->BATCH_SIZE*2, ...
-  const BATCH_SIZE = 3;
-
   const [usernameText, setUsernameText] = useState<string>("Valo Stats");
 
-  const [endIndex, setEndIndex] = useState<number>(BATCH_SIZE);
+  const [endIndex, setEndIndex] = useState<number>(QueryConstants.BATCH_SIZE);
   const [startIndex, setStartIndex] = useState<number>(0);
   const [puuid, setPuuid] = useState<string>("");
   const [matches, setMatches] = useState<MatchTypes.Match[]>([]);
@@ -47,13 +45,13 @@ function App() {
   function incrementIndices() {
     setStartIndex(endIndex);
     setEndIndex((prevEndIndex) => {
-      return prevEndIndex + BATCH_SIZE;
+      return prevEndIndex + QueryConstants.BATCH_SIZE;
     });
   }
 
   function resetIndices() {
     setStartIndex(0);
-    setEndIndex(BATCH_SIZE);
+    setEndIndex(QueryConstants.BATCH_SIZE);
   }
 
   // request api for next set of matches
