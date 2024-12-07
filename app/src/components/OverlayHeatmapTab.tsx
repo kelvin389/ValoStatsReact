@@ -129,22 +129,22 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
                 </button>
                 <button
                   className={
-                    (filters.KillDeath == FilterKillDeath.Both ? highlightStyle : "") +
-                    allButtonStyle
-                  }
-                  onClick={() => updateFilterKillDeath(FilterKillDeath.Both)}
-                >
-                  Both
-                </button>
-                <button
-                  className={
                     (filters.KillDeath == FilterKillDeath.Death ? highlightStyle : "") +
-                    allButtonStyle +
-                    rightButtonStyle
+                    allButtonStyle
                   }
                   onClick={() => updateFilterKillDeath(FilterKillDeath.Death)}
                 >
                   Deaths
+                </button>
+                <button
+                  className={
+                    (filters.KillDeath == FilterKillDeath.Both ? highlightStyle : "") +
+                    allButtonStyle +
+                    rightButtonStyle
+                  }
+                  onClick={() => updateFilterKillDeath(FilterKillDeath.Both)}
+                >
+                  Both
                 </button>
               </div>
               <div className="flex items-center justify-center">
@@ -160,22 +160,22 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
                 </button>
                 <button
                   className={
-                    (filters.AttackDefend == FilterAttackDefend.Both ? highlightStyle : "") +
-                    allButtonStyle
-                  }
-                  onClick={() => updateFilterAttackDefend(FilterAttackDefend.Both)}
-                >
-                  Both
-                </button>
-                <button
-                  className={
                     (filters.AttackDefend == FilterAttackDefend.Defense ? highlightStyle : "") +
-                    allButtonStyle +
-                    rightButtonStyle
+                    allButtonStyle
                   }
                   onClick={() => updateFilterAttackDefend(FilterAttackDefend.Defense)}
                 >
                   Defense
+                </button>
+                <button
+                  className={
+                    (filters.AttackDefend == FilterAttackDefend.Both ? highlightStyle : "") +
+                    allButtonStyle +
+                    rightButtonStyle
+                  }
+                  onClick={() => updateFilterAttackDefend(FilterAttackDefend.Both)}
+                >
+                  Both
                 </button>
               </div>
               <div className="flex items-center justify-center">
@@ -191,22 +191,22 @@ function OverlayHeatmapTab(props: OverlayHeatmapTabProps) {
                 </button>
                 <button
                   className={
-                    (filters.PrePostPlant == FilterPrePostPlant.Both ? highlightStyle : "") +
-                    allButtonStyle
-                  }
-                  onClick={() => updateFilterPrePostPlant(FilterPrePostPlant.Both)}
-                >
-                  Both
-                </button>
-                <button
-                  className={
                     (filters.PrePostPlant == FilterPrePostPlant.Postplant ? highlightStyle : "") +
-                    allButtonStyle +
-                    rightButtonStyle
+                    allButtonStyle
                   }
                   onClick={() => updateFilterPrePostPlant(FilterPrePostPlant.Postplant)}
                 >
                   Post-Plant
+                </button>
+                <button
+                  className={
+                    (filters.PrePostPlant == FilterPrePostPlant.Both ? highlightStyle : "") +
+                    allButtonStyle +
+                    rightButtonStyle
+                  }
+                  onClick={() => updateFilterPrePostPlant(FilterPrePostPlant.Both)}
+                >
+                  Both
                 </button>
               </div>
               <div className="flex items-center justify-center text-center">
